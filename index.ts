@@ -34,7 +34,24 @@ for (let file of files) {
   if (file.isSocket()) {
     name = c.bgGreen(name);
   }
-
+  
   f.push(name);
 }
-console.log(f.join(" "));
+const displayGrid = (array: string[]): void => {
+   let length = 0;
+   
+   for (let i = 0; i < array.length; i++) {
+    array[i] = `${array[i]}  `
+   if ((length + c.stripColors(array[i]).length)  >= (process.stdout.columns - 12)) {
+    console.write("\n")
+    length = 0;
+   } 
+   console.write(array[i])
+   length += c.stripColors(array[i]).length
+    }
+    console.write("\n")
+};
+
+
+
+displayGrid(f)
