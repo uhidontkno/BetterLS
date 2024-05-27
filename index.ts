@@ -10,29 +10,32 @@ try {
   console.warn(c.red(c.bold("error: ")) + e);
 }
 let f: string[] = [];
-for (let i = 0; i < files.length; i++) {
-  f[i] = files[i].name;
+for (let file of files) {
+  let name = file.name;
 
-  if (files[i].isDirectory()) {
-    f[i] = c.blue(files[i].name);
+  if (file.isDirectory()) {
+    name = c.blue(name);
+  }
+  if (file.isSymbolicLink()) {
+    name = c.red(name);
+  }
+  if (file.name.startsWith(".")) {
+    name = c.dim(name);
+  }
+  if (file.isDirectory() && file.name.startsWith(".")) {
+    name = c.dim(c.yellow(name));
+  }
+  if (file.isBlockDevice()) {
+    name = c.bgBlue(name);
+  }
+  if (file.isCharacterDevice()) {
+    name = c.italic(name);
+  }
+  if (file.isSocket()) {
+    name = c.bgGreen(name);
   }
 
-  if (files[i].isSymbolicLink()) {
-    f[i] = c.red(files[i].name);
-  }
-
-  if (files[i].name.startsWith(".")) {
-    f[i] = c.dim(files[i].name);
-  }
-  if (files[i].isDirectory() && files[i].name.startsWith(".")) {
-    f[i] = c.dim(c.yellow(files[i].name));
-  }
-  if (files[i].isBlockDevice()) {
-    f[i] = c.bgBlue(files[i].name);
-  }
-  if (files[i].isCharacterDevice()) {
-    f[i] = c.bold(files[i].name);
-  }
+  f.push(name);
 }
 
 console.log(f.join("  "));
