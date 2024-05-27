@@ -13,17 +13,17 @@ let f: string[] = [];
 for (let file of files) {
   let name = file.name;
 
-  if (file.isDirectory()) {
+  if (file.isDirectory() && !file.name.startsWith(".")) {
     name = c.blue(name);
   }
   if (file.isSymbolicLink()) {
     name = c.red(name);
   }
-  if (file.name.startsWith(".")) {
+  if (file.isFile() && file.name.startsWith(".")) {
     name = c.dim(name);
   }
   if (file.isDirectory() && file.name.startsWith(".")) {
-    name = c.dim(c.yellow(name));
+    name = c.dim(c.blue(name));
   }
   if (file.isBlockDevice()) {
     name = c.bgBlue(name);
@@ -37,5 +37,4 @@ for (let file of files) {
 
   f.push(name);
 }
-
-console.log(f.join("  "));
+console.log(f.join(" "));
