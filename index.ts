@@ -2,14 +2,30 @@ import c from "colors/safe";
 import { resolve } from "path";
 import { readdir } from "node:fs/promises";
 
-// @ts-expect-error
-const path = resolve(process.argv.at(-1));
-const files = await readdir(path);
+
+let path = resolve(process.argv.at(-1) || "./");
+let files = await readdir("./",{ withFileTypes: true });
+try {
+    files = await readdir(path,{ withFileTypes: true });
+}
+catch (e) {
+    console.warn(c.red(c.bold("error: ")) + e)
+}
+let f:string[] = []
 for (let i = 0; i < files.length; i++) {
-    if (files[i].startsWith(".")) {
-        files[i] = c.gray(files[i]);
+    f[i] = files[i].name
+    if ( files[i].name.startsWith(".")) {
+        f[i] = c.dim(files[i].name);
     }
-    
+    if (files[i].isDirectory()) {
+        f[i] = c.yellow(files[i].name)
+    }
+    if (files[i].isDirectory() && files[i].name.startsWith(".")) {
+        f[i] = c.dim(c.yellow(files[i].name));
+    }
+    if (files[i].isSymbolicLink()) {
+        f[i] = c.red(files[i].name)
+    }
 }
 
-console.log(files.join(" "))
+console.log(f.join(" "))
