@@ -1,4 +1,4 @@
-import c from "colors/safe";
+import c, { bgMagenta } from "colors/safe";
 import { resolve } from "path";
 import { readdir } from "node:fs/promises";
 
@@ -14,18 +14,26 @@ catch (e) {
 let f:string[] = []
 for (let i = 0; i < files.length; i++) {
     f[i] = files[i].name
+    
+    if (files[i].isDirectory()) {
+        f[i] = c.blue(files[i].name)
+    }
+    
+    if (files[i].isSymbolicLink()) {
+        f[i] = c.red(files[i].name)
+    }
+
     if ( files[i].name.startsWith(".")) {
         f[i] = c.dim(files[i].name);
-    }
-    if (files[i].isDirectory()) {
-        f[i] = c.yellow(files[i].name)
     }
     if (files[i].isDirectory() && files[i].name.startsWith(".")) {
         f[i] = c.dim(c.yellow(files[i].name));
     }
-    if (files[i].isSymbolicLink()) {
-        f[i] = c.red(files[i].name)
+    if (files[i].isBlockDevice()) {
+        f[i] = c.bgBlue(files[i].name)
     }
-}
+    if (files[i].isCharacterDevice()) {
+        f[i] = c.bold(files[i].name)
+    }}
 
-console.log(f.join(" "))
+console.log(f.join("  "))
